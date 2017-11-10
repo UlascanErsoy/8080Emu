@@ -1,0 +1,3 @@
+/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/edit_cache.dir
+/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/8080Emulator.dir
+/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/rebuild_cache.dir
