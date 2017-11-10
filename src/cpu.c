@@ -777,7 +777,7 @@ unsigned int execute(struct cpu_state* state){
 			state->flag->C = state->A >> 7;
 			state->A = state->A << 1;
 			break;
-		case 0x1F:
+		case 0x1F: //RAR
 			emu_message(EMU_VERBOSE , "Executing RAR | A>>1");
 			state->flag->C = state->A % 2;
 			state->A = state->A >> 1;
