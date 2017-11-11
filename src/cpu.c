@@ -539,7 +539,6 @@ unsigned int execute(struct cpu_state* state){
 			state->flag->C = __builtin_sub_overflow(state->A , state->A , &state->A);
 			updateFlags(state);
 			break;
-
 		case 0x98: //SBB B
 			emu_message(EMU_VERBOSE , "Executing SBB B | A-=B - Carry");
 			state->flag->C = __builtin_sub_overflow(state->A , state->flag->C , &state->A);
@@ -782,8 +781,151 @@ unsigned int execute(struct cpu_state* state){
 			state->flag->C = state->A % 2;
 			state->A = state->A >> 1;
 			break;
+		case 0xA7: //ANA A
+			emu_message(EMU_VERBOSE , "Executing ANA A | A=A&&A");
+			state->A &= state->A;
+			break;
+		case 0xA0: //ANA B
+			emu_message(EMU_VERBOSE , "Executing ANA B | A=B&&A");
+			state->A &= state->B;
+			break;
+		case 0xA1: //ANA C
+			emu_message(EMU_VERBOSE , "Executing ANA C | A=C&&A");
+			state->A &= state->C;
+			break;
+		case 0xA2: //ANA D
+			emu_message(EMU_VERBOSE , "Executing ANA D | A=D&&A");
+			state->A &= state->D;
+			break;
+		case 0xA3: //ANA E
+			emu_message(EMU_VERBOSE , "Executing ANA E | A=E&&A");
+			state->A &= state->E;
+			break;
+		case 0xA4: //ANA H
+			emu_message(EMU_VERBOSE , "Executing ANA H | A=H&&A");
+			state->A &= state->H;
+			break;
+		case 0xA5: //ANA L
+			emu_message(EMU_VERBOSE , "Executing ANA L | A=L&&A");
+			state->A &= state->L;
+			break;
+		case 0xA6: //ANA M
+			emu_message(EMU_VERBOSE , "Executing ANA M | A=(HL)&&A");
+			state->A &= read_mem(state->mem_unit , reg_HL(state));
+			break;
+		case 0xE6: //ANI byte
+			emu_message(EMU_VERBOSE , "Executing ANI byte | A=byte&&A");
+			state->A &= read_mem(state->mem_unit , ++state->program_ptr);
+			break;
+		case 0xAF: //XRA A
+			emu_message(EMU_VERBOSE , "Executing XRA A | A=A ^ A");
+			state->A ^= state->A;
+			break;
+		case 0xA8: //XRA B
+			emu_message(EMU_VERBOSE , "Executing XRA B | A=B ^ A");
+			state->A ^= state->B;
+			break;
+		case 0xA9: //XRA C
+			emu_message(EMU_VERBOSE , "Executing XRA C | A=C ^ A");
+			state->A ^= state->C;
+			break;
+		case 0xAA: //XRA D
+			emu_message(EMU_VERBOSE , "Executing XRA D | A=D ^ A");
+			state->A ^= state->D;
+			break;
+		case 0xAB: //XRA E
+			emu_message(EMU_VERBOSE , "Executing XRA E | A=E ^ A");
+			state->A ^= state->E;
+			break;
+		case 0xAC: //XRA H
+			emu_message(EMU_VERBOSE , "Executing XRA H | A=H ^ A");
+			state->A ^= state->H;
+			break;
+		case 0xAD: //XRA L
+			emu_message(EMU_VERBOSE , "Executing XRA L | A=L ^ A");
+			state->A ^= state->L;
+			break;
+		case 0xAE: //XRA M
+			emu_message(EMU_VERBOSE , "Executing XRA M | A=(HL) ^ A");
+			state->A ^= read_mem(state->mem_unit , reg_HL(state));
+			break;
+		case 0xEE: //XRI byte
+			emu_message(EMU_VERBOSE , "Executing XRI byte | A=byte ^ A");
+			state->A ^= read_mem(state->mem_unit , ++state->program_ptr);
+			break;
+		case 0xB7: //ORA A
+			emu_message(EMU_VERBOSE , "Executing ORA A | A=A || A");
+			state->A |= state->A;
+			break;
+		case 0xB0: //ORA B
+			emu_message(EMU_VERBOSE , "Executing ORA B | A=B || A");
+			state->A |= state->B;
+			break;
+		case 0xB1: //ORA C
+			emu_message(EMU_VERBOSE , "Executing ORA C | A=C || A");
+			state->A |= state->C;
+			break;
+		case 0xB2: //ORA D
+			emu_message(EMU_VERBOSE , "Executing ORA D | A=D || A");
+			state->A |= state->D;
+			break;
+		case 0xB3: //ORA E
+			emu_message(EMU_VERBOSE , "Executing ORA E | A=E || A");
+			state->A |= state->E;
+			break;
+		case 0xB4: //ORA H
+			emu_message(EMU_VERBOSE , "Executing ORA H | A=H || A");
+			state->A |= state->H;
+			break;
+		case 0xB5: //ORA L
+			emu_message(EMU_VERBOSE , "Executing ORA L | A=L || A");
+			state->A |= state->L;
+			break;
+		case 0xB6: //ORA M
+			emu_message(EMU_VERBOSE , "Executing ORA M | A=(HL) || A");
+			state->A |= read_mem(state->mem_unit , reg_HL(state));
+			break;
+		case 0xF6: //ORI byte
+			emu_message(EMU_VERBOSE , "Executing ORI byte | A=byte || A");
+			state->A |= read_mem(state->mem_unit , ++state->program_ptr);
+			break;
+		case 0xBF: //CMP A
+			emu_message(EMU_VERBOSE , "Executing CMP A | A?=A");
+			state->flag->Z = 1;
+			break;
+		case 0xB8: //CMP B
+			emu_message(EMU_VERBOSE , "Executing CMP B | A?=B");
+			state->flag->Z = state->B-state->A==0?1:0;
+			break;
+		case 0xB9: //CMP C
+			emu_message(EMU_VERBOSE , "Executing CMP C | A?=C");
+			state->flag->Z = state->C-state->A==0?1:0;
+			break;
+		case 0xBA: //CMP D
+			emu_message(EMU_VERBOSE , "Executing CMP D | A?=D");
+			state->flag->Z = state->D-state->A==0?1:0;
+			break;
+		case 0xBB: //CMP E
+			emu_message(EMU_VERBOSE , "Executing CMP E | A?=E");
+			state->flag->Z = state->E-state->A==0?1:0;
+			break;
+		case 0xBC: //CMP H
+			emu_message(EMU_VERBOSE , "Executing CMP H | A?=H");
+			state->flag->Z = state->H-state->A==0?1:0;
+			break;
+		case 0xBD: //CMP L
+			emu_message(EMU_VERBOSE , "Executing CMP L | A?=L");
+			state->flag->Z = state->L-state->A==0?1:0;
+			break;
+		case 0xBE: //CMP M
+			emu_message(EMU_VERBOSE , "Executing CMP (HL) | A?=(HL)");
+			state->flag->Z = read_mem(state->mem_unit , reg_HL(state))-state->A==0?1:0;
+			break;
+		case 0xFE: //CPI byte
+			emu_message(EMU_VERBOSE , "Executing CPI byte | A?=Byte");
+			state->flag->Z = read_mem(state->mem_unit , ++state->program_ptr)-state->A==0?1:0;
+			break;
 		
-			
 		default:
 			emu_error("Execution Error!",true);
 
