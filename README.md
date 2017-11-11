@@ -1,7 +1,7 @@
 # 8080Emu
-Intel 8080 Emulator project
+__Intel 8080 Emulator project__
 
-  - [ ]CPU Emulation
-  - [ ]Space Invaders
-  - [ ]CP/M
-  - [ ]Assembler
+- [ ] CPU Emulation
+- [ ] Space Invaders
+- [ ] CP/M
+- [ ] Assembler
