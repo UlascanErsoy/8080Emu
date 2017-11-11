@@ -1,8 +1,31 @@
+
 #include "cpu.h"
+/**16-bit registers**/
+inline static uint16_t reg_HL(struct cpu_state* state){return state->H + (state->L << 8);}
+inline static uint16_t reg_BC(struct cpu_state* state){return state->B + (state->C << 8);}
+inline static uint16_t reg_DE(struct cpu_state* state){return state->D + (state->E << 8);}
+inline static uint32_t reg_SP(struct cpu_state* state){return state->stack_ptr + (state->program_ptr<<16);}
+
+inline static void write_16(uint8_t *ptr , uint16_t val){ *ptr = val; }
+
+inline static void JUMP(struct cpu_state* state, uint16_t addr){
+	
+	state->program_ptr = read_mem(state->mem_unit , addr);
+}
+
+/**Slightly Dubious**/
+static void CALL(struct cpu_state* state, uint16_t addr){
+	
+	write_16(state->stack_ptr-2 , state->program_ptr);
+	state->stack_ptr-=2;
+	state->program_ptr = addr;
+}
+
 
 struct cpu_state* cpu_init(){
 	
 	struct cpu_state* state = calloc(1 , sizeof(struct cpu_state));
+	state->stack_ptr = 0xFFFF;/**Stack_ptr starts at the top**/
 	state->mem_unit = mem_init();
 
 return state;
@@ -924,6 +947,67 @@ unsigned int execute(struct cpu_state* state){
 		case 0xFE: //CPI byte
 			emu_message(EMU_VERBOSE , "Executing CPI byte | A?=Byte");
 			state->flag->Z = read_mem(state->mem_unit , ++state->program_ptr)-state->A==0?1:0;
+			break;
+		case 0xC3: //JMP address
+			emu_message(EMU_VERBOSE , "Executing JMP addr | program_ptr = address");
+			JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			++state->program_ptr;
+			break;
+		case 0xC2: //JNZ address
+			emu_message(EMU_VERBOSE , "Executing JNZ addr | if NZ->program_ptr = address");
+			if(!state->flag->Z){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xCA: //JZ address
+			emu_message(EMU_VERBOSE , "Executing JZ addr | if Z->program_ptr = address");
+			if(state->flag->Z){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xD2: //JNC address
+			emu_message(EMU_VERBOSE , "Executing JNC addr | if NC->program_ptr = address");
+			if(!state->flag->C){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xDA: //JC  address
+			emu_message(EMU_VERBOSE , "Executing JC addr | if C->program_ptr = address");
+			if(state->flag->C){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xE2: //JPO address
+			emu_message(EMU_VERBOSE , "Executing JPO addr | if PO->program_ptr = address");
+			if(!state->flag->P){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xEA: //JPE address
+			emu_message(EMU_VERBOSE , "Executing JPE addr | if PE->program_ptr = address");
+			if(state->flag->P){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xF2: //JP address
+			emu_message(EMU_VERBOSE , "Executing JP addr | if S->program_ptr = address");
+			if(!state->flag->S){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xFA: //JM address
+			emu_message(EMU_VERBOSE , "Executing JM addr | if S->program_ptr = address");
+			if(state->flag->S){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
 			break;
 		
 		default:

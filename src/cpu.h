@@ -21,7 +21,6 @@ struct flags{
 struct cpu_state{
 	
 	/**16 bit pointers**/
-	
 	uint16_t stack_ptr;
 	uint16_t program_ptr;
 
@@ -41,14 +40,5 @@ struct cpu_state{
 	
 	struct cpu_state* cpu_init();
 	unsigned int execute(struct cpu_state* state);
-	/**16-bit registers**/
-	inline static uint16_t reg_HL(struct cpu_state* state){return state->H + (state->L << 8);}
-	inline static uint16_t reg_BC(struct cpu_state* state){return state->B + (state->C << 8);}
-	inline static uint16_t reg_DE(struct cpu_state* state){return state->D + (state->E << 8);}
-	inline static uint32_t reg_SP(struct cpu_state* state){return state->stack_ptr + (state->program_ptr<<16);}
 
-	inline static void write_16(uint8_t *ptr , uint16_t val){ *ptr = val; }
-	
-	static void updateFlags(struct cpu_state* state);
-	static void DAA(struct cpu_state* state);	
 #endif

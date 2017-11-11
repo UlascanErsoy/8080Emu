@@ -1,0 +1,48 @@
+#TODO#
+
+[*]Cmake
+
+--CPU--
+[*]Implement all of the mov functions
+[*]Implement all of the mvi functions
+[*]Implement all of the lxi functions
+[*]Implement all of the ldax functions
+[*]Implement all of the stax funtions
+[*]Implement all of the lda functions
+[*]Implement all of the logic functions
+[*]Implement all of the math functions
+	[*]Implement add functions
+	[*]Implement inc functions
+	[*]Implement dec functions
+	[*]Implement sub functions
+[*]Implement CALL
+[ ]Implement JUMP
+[ ]Implement Cpu Test
+[*]Implement DAA function
+
+[-]Implement 16 bit functions
+	<--Functions-->
+	[*]cpu_init function
+	[*]mem_init function
+	[*]read_mem function
+	[*]write_mem function
+	[-]Try to fix the warnings from write16
+--Memory--
+[*]Initializer
+[ ]Loader
+[*]Return
+
+--Debugging--
+[*]emu_message function
+[-]Improve emu_message function
+[*]emu_warning function
+[*]emu_error   function
+[ ]emu_dump
+[ ]memory_dump
+[ ]Error codes
+
+[*]Verbose Mode
+
+#NOTES#
+->First 64bytes of the page zero is dedicated to RET0-7 instructions
+->Uncertain about RLC and RRC carry flag
