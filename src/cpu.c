@@ -1009,6 +1009,72 @@ unsigned int execute(struct cpu_state* state){
 				++state->program_ptr;
 				}
 			break;
+		case 0xE9: //PCHL
+			emu_message(EMU_VERBOSE , "Executing PCHL | PC <- HL");
+			state->program_ptr = reg_HL(state);
+			break;
+		case 0xCD: //CALL address
+			emu_message(EMU_VERBOSE , "Executing CALL addr | program_ptr = address");
+			CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			++state->program_ptr;
+			break;
+		case 0xC4: //CNZ address
+			emu_message(EMU_VERBOSE , "Executing CNZ addr | if NZ->program_ptr = address");
+			if(!state->flag->Z){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xCC: //CZ address
+			emu_message(EMU_VERBOSE , "Executing CZ addr | if Z->program_ptr = address");
+			if(state->flag->Z){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xD4: //CNC address
+			emu_message(EMU_VERBOSE , "Executing CNC addr | if NC->program_ptr = address");
+			if(!state->flag->C){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xDC: //CC  address
+			emu_message(EMU_VERBOSE , "Executing CC addr | if C->program_ptr = address");
+			if(state->flag->C){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xE4: //CPO address
+			emu_message(EMU_VERBOSE , "Executing CPO addr | if PO->program_ptr = address");
+			if(!state->flag->P){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xEC: //CPE address
+			emu_message(EMU_VERBOSE , "Executing CPE addr | if PE->program_ptr = address");
+			if(state->flag->P){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xF4: //CP address
+			emu_message(EMU_VERBOSE , "Executing CP addr | if S->program_ptr = address");
+			if(!state->flag->S){
+				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		case 0xFC: //CM address
+			emu_message(EMU_VERBOSE , "Executing CM addr | if S->program_ptr = address");
+			if(state->flag->S){
+				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+				++state->program_ptr;
+				}
+			break;
+		
 		
 		default:
 			emu_error("Execution Error!",true);
