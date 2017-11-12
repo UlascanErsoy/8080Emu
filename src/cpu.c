@@ -1,4 +1,3 @@
-
 #include "cpu.h"
 /**16-bit registers**/
 inline static uint16_t reg_HL(struct cpu_state* state){return state->H + (state->L << 8);}
@@ -21,6 +20,12 @@ static void CALL(struct cpu_state* state, uint16_t addr){
 	state->program_ptr = addr;
 }
 
+static void RET(struct cpu_state* state){
+	
+	state->program_ptr = read_mem16(state , state->stack_ptr);
+	state->stack_ptr+=2;
+	
+}
 
 struct cpu_state* cpu_init(){
 	
@@ -1074,8 +1079,43 @@ unsigned int execute(struct cpu_state* state){
 				++state->program_ptr;
 				}
 			break;
-		
-		
+		case 0xC9: //RET
+			emu_message(EMU_VERBOSE , "Executing RET | RETURN from subroutine");
+			RET(state);
+			break;	
+		case 0xC0: //RNZ
+			emu_message(EMU_VERBOSE , "Executing RNZ | RETURN from subroutine if NZ");
+			if(!state->flag->Z)RET(state);
+			break;
+		case 0xC8: //RZ
+			emu_message(EMU_VERBOSE , "Executing RZ | RETURN from subroutine if Z");
+			if(state->flag->Z)RET(state);
+			break;
+		case 0xD0: //RNC
+			emu_message(EMU_VERBOSE , "Executing RNC | RETURN from subroutine if NC");
+			if(!state->flag->C)RET(state);
+			break;
+		case 0xD8: //RC
+			emu_message(EMU_VERBOSE , "Executing RC | RETURN from subroutine if C");
+			if(state->flag->C)RET(state);
+			break;
+		case 0xE0: //RPO
+			emu_message(EMU_VERBOSE , "Executing RPO | RETURN from subroutine if PO");
+			if(!state->flag->P)RET(state);
+			break;
+		case 0xE8: //RPE
+			emu_message(EMU_VERBOSE , "Executing RPE | RETURN from subroutine if PE");
+			if(state->flag->P)RET(state);
+			break;
+		case 0xF0: //RP
+			emu_message(EMU_VERBOSE , "Executing RP | RETURN from subroutine if P(ositive)");
+			if(!state->flag->S)RET(state);
+			break;
+		case 0xF8: //RM
+			emu_message(EMU_VERBOSE , "Executing RM | RETURN from subroutine if M(inus)");
+			if(state->flag->S)RET(state);
+			break;
+
 		default:
 			emu_error("Execution Error!",true);
 
