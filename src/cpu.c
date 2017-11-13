@@ -1147,14 +1147,70 @@ unsigned int execute(struct cpu_state* state){
 			emu_message(EMU_VERBOSE , "Executing RST 56");
 			CALL(state , 7 * 8);
 			break;
-		
-		
+		case 0xC5: //PUSH B
+			emu_message(EMU_VERBOSE , "Executing PUSH BC | BC -> Stack");
+			state->stack_ptr-=2;
+			write_mem16(state->mem_unit , state->stack_ptr , (uint16_t*)state->B);
+			break;
+		case 0xD5: //PUSH D
+			emu_message(EMU_VERBOSE , "Executing PUSH DE | DE -> Stack");
+			state->stack_ptr-=2;
+			write_mem16(state->mem_unit , state->stack_ptr , (uint16_t*)state->D);
+			break;
+		case 0xE5: //PUSH H
+			emu_message(EMU_VERBOSE , "Executing PUSH HL | HL -> Stack");
+			state->stack_ptr-=2;
+			write_mem16(state->mem_unit , state->stack_ptr , (uint16_t*)state->H);
+			break;
+		case 0xF5: //PUSH A
+			emu_message(EMU_VERBOSE , "Executing PUSH APSW | APSW -> Stack");
+			state->stack_ptr-=2;
+			write_mem16(state->mem_unit , state->stack_ptr , (uint16_t*)state->A);
+			break;
+		case 0xC1: //POP B
+			emu_message(EMU_VERBOSE , "Executing POP BC | BC <- Stack");
+			state->B = read_mem(state->mem_unit , state->stack_ptr+1);
+			state->C = read_mem(state->mem_unit , state->stack_ptr);
+			state->stack_ptr+=2;
+			break;
+		case 0xD1: //POP D
+			emu_message(EMU_VERBOSE , "Executing POP DE | DE <- Stack");
+			state->D = read_mem(state->mem_unit , state->stack_ptr+1);
+			state->E = read_mem(state->mem_unit , state->stack_ptr);
+			state->stack_ptr+=2;
+			break;
+		case 0xE1: //POP H
+			emu_message(EMU_VERBOSE , "Executing POP BC | HL <- Stack");
+			state->H = read_mem(state->mem_unit , state->stack_ptr+1);
+			state->L = read_mem(state->mem_unit , state->stack_ptr);
+			state->stack_ptr+=2;
+			break;
+		case 0xF1: //POP APSW
+			emu_message(EMU_VERBOSE , "Executing POP APSW | APSW <- Stack");
+			state->A = read_mem(state->mem_unit , state->stack_ptr+1);
+			state->flag = read_mem(state->mem_unit , state->stack_ptr);
+			state->stack_ptr+=2;
+			break;
+		case 0xDB: //IN
+			emu_message(EMU_VERBOSE , "Executing IN byte | A <- [byte]");
+			state->A = state->port[read_mem(state->mem_unit, ++state->program_ptr)];
+			break;
+		case 0xD3: //OUT
+			emu_message(EMU_VERBOSE , "Executing OUT byte | A -> [byte]");
+			state->port[read_mem(state->mem_unit,++state->program_ptr)] = state->A;
+			break;
+		case 0x00: //NO OP
+			emu_message(EMU_DETAILED , "No operation!");
+			break;
+		case 0x76: //HLT
+			emu_message(EMU_TRIVIAL ,"HALT!");
+			--state->program_ptr;
+			break;
 		default:
 			emu_error("Execution Error!",true);
 
 	}	
 	
-	++state->program_ptr;
 
 return 0;
 }
