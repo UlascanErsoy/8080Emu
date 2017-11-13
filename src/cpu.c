@@ -1115,7 +1115,40 @@ unsigned int execute(struct cpu_state* state){
 			emu_message(EMU_VERBOSE , "Executing RM | RETURN from subroutine if M(inus)");
 			if(state->flag->S)RET(state);
 			break;
-
+		case 0xC7: //RST 0
+			emu_message(EMU_VERBOSE , "Executing RST 0");
+			CALL(state , 0 * 8);
+			break;
+		case 0xCF: //RST 8
+			emu_message(EMU_VERBOSE , "Executing RST 8");
+			CALL(state , 1 * 8);
+			break;
+		case 0xD7: //RST 16
+			emu_message(EMU_VERBOSE , "Executing RST 16");
+			CALL(state , 2 * 8);
+			break;
+		case 0xDF: //RST 24
+			emu_message(EMU_VERBOSE , "Executing RST 24");
+			CALL(state , 3 * 8);
+			break;
+		case 0xE7: //RST 32
+			emu_message(EMU_VERBOSE , "Executing RST 32");
+			CALL(state , 4 * 8);
+			break;
+		case 0xEF: //RST 40
+			emu_message(EMU_VERBOSE , "Executing RST 40");
+			CALL(state , 5 * 8);
+			break;
+		case 0xF7: //RST 48
+			emu_message(EMU_VERBOSE , "Executing RST 48");
+			CALL(state , 6 * 8);
+			break;
+		case 0xFF: //RST 56
+			emu_message(EMU_VERBOSE , "Executing RST 56");
+			CALL(state , 7 * 8);
+			break;
+		
+		
 		default:
 			emu_error("Execution Error!",true);
 

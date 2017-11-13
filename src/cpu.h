@@ -15,7 +15,7 @@ struct flags{
 	uint8_t P : 1;	//Parity(even bits => 1)
 	uint8_t C : 1;	//Set if the last addition resulted in a carry or the last subtraction required a borrow
 	uint8_t H : 1;	//Auxilary carry
-	uint8_t I : 1;
+	uint8_t I : 3;
 };
 
 struct cpu_state{
