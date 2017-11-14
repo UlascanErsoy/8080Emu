@@ -51,9 +51,9 @@ void emu_warning(enum verboseness p , char* str){
 
 }
 
-char* getVersion(){
+char* getVersion(char* _v){
 	
-	char* _v;
+	_v = malloc(sizeof(char) * 8);
 	snprintf(_v , 8 ,"%d.%d" , VERSION_MAJOR , VERSION_MINOR);
 
 return _v;
