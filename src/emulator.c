@@ -20,7 +20,7 @@ char* int_str(unsigned int num){
 	return(ptr);
 }
 
-void emu_message(enum verboseness p ,char* str, ...){
+void emu_message(enum verboseness p ,char* str){
 								
 	enum verboseness c;
 	if(p >= (c = DEBUG_MODE)){
@@ -58,3 +58,5 @@ char* getVersion(char* _v){
 
 return _v;
 }
+
+

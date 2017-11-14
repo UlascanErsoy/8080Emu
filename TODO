@@ -16,9 +16,11 @@
 	[*]Implement dec functions
 	[*]Implement sub functions
 [*]Implement CALL
-[ ]Implement JUMP
+[*]Implement JUMP
 [ ]Implement Cpu Test
 [*]Implement DAA function
+
+[ ]Implement timer
 
 [-]Implement 16 bit functions
 	<--Functions-->

@@ -7,19 +7,29 @@ CMakeFiles/8080Emulator.dir/cpu.c.o
  /home/ulascan/c_programs/8080emu/src/cpu.h
  /home/ulascan/c_programs/8080emu/src/emulator.h
  /home/ulascan/c_programs/8080emu/src/memory.h
+ /home/ulascan/c_programs/8080emu/src/timer.h
 CMakeFiles/8080Emulator.dir/emulator.c.o
  /home/ulascan/c_programs/8080emu/src/common.h
  /home/ulascan/c_programs/8080emu/src/cpu.h
  /home/ulascan/c_programs/8080emu/src/emulator.c
  /home/ulascan/c_programs/8080emu/src/emulator.h
  /home/ulascan/c_programs/8080emu/src/memory.h
+ /home/ulascan/c_programs/8080emu/src/timer.h
 CMakeFiles/8080Emulator.dir/main.c.o
  /home/ulascan/c_programs/8080emu/src/common.h
  /home/ulascan/c_programs/8080emu/src/cpu.h
  /home/ulascan/c_programs/8080emu/src/emulator.h
  /home/ulascan/c_programs/8080emu/src/main.c
  /home/ulascan/c_programs/8080emu/src/memory.h
+ /home/ulascan/c_programs/8080emu/src/timer.h
 CMakeFiles/8080Emulator.dir/memory.c.o
  /home/ulascan/c_programs/8080emu/src/common.h
  /home/ulascan/c_programs/8080emu/src/memory.c
  /home/ulascan/c_programs/8080emu/src/memory.h
+CMakeFiles/8080Emulator.dir/timer.c.o
+ /home/ulascan/c_programs/8080emu/src/common.h
+ /home/ulascan/c_programs/8080emu/src/cpu.h
+ /home/ulascan/c_programs/8080emu/src/emulator.h
+ /home/ulascan/c_programs/8080emu/src/memory.h
+ /home/ulascan/c_programs/8080emu/src/timer.c
+ /home/ulascan/c_programs/8080emu/src/timer.h

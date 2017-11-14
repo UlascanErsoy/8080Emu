@@ -41,6 +41,8 @@ memory.h
 /home/ulascan/c_programs/8080emu/src/memory.h
 cpu.h
 /home/ulascan/c_programs/8080emu/src/cpu.h
+timer.h
+/home/ulascan/c_programs/8080emu/src/timer.h
 
 /home/ulascan/c_programs/8080emu/src/main.c
 emulator.h
@@ -53,4 +55,14 @@ memory.h
 /home/ulascan/c_programs/8080emu/src/memory.h
 common.h
 /home/ulascan/c_programs/8080emu/src/common.h
+
+/home/ulascan/c_programs/8080emu/src/timer.c
+timer.h
+/home/ulascan/c_programs/8080emu/src/timer.h
+
+/home/ulascan/c_programs/8080emu/src/timer.h
+time.h
+-
+emulator.h
+/home/ulascan/c_programs/8080emu/src/emulator.h
 

@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/8080Emulator.dir/emulator.c.o"
   "CMakeFiles/8080Emulator.dir/cpu.c.o"
   "CMakeFiles/8080Emulator.dir/memory.c.o"
+  "CMakeFiles/8080Emulator.dir/timer.c.o"
   "/home/ulascan/c_programs/8080emu/bin/8080Emulator.pdb"
   "/home/ulascan/c_programs/8080emu/bin/8080Emulator"
 )

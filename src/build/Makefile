@@ -231,6 +231,33 @@ memory.c.s:
 	$(MAKE) -f CMakeFiles/8080Emulator.dir/build.make CMakeFiles/8080Emulator.dir/memory.c.s
 .PHONY : memory.c.s
 
+timer.o: timer.c.o
+
+.PHONY : timer.o
+
+# target to build an object file
+timer.c.o:
+	$(MAKE) -f CMakeFiles/8080Emulator.dir/build.make CMakeFiles/8080Emulator.dir/timer.c.o
+.PHONY : timer.c.o
+
+timer.i: timer.c.i
+
+.PHONY : timer.i
+
+# target to preprocess a source file
+timer.c.i:
+	$(MAKE) -f CMakeFiles/8080Emulator.dir/build.make CMakeFiles/8080Emulator.dir/timer.c.i
+.PHONY : timer.c.i
+
+timer.s: timer.c.s
+
+.PHONY : timer.s
+
+# target to generate assembly for a file
+timer.c.s:
+	$(MAKE) -f CMakeFiles/8080Emulator.dir/build.make CMakeFiles/8080Emulator.dir/timer.c.s
+.PHONY : timer.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -252,6 +279,9 @@ help:
 	@echo "... memory.o"
 	@echo "... memory.i"
 	@echo "... memory.s"
+	@echo "... timer.o"
+	@echo "... timer.i"
+	@echo "... timer.s"
 .PHONY : help
 
 

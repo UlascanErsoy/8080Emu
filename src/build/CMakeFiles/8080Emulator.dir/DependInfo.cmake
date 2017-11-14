@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/home/ulascan/c_programs/8080emu/src/emulator.c" "/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/8080Emulator.dir/emulator.c.o"
   "/home/ulascan/c_programs/8080emu/src/main.c" "/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/8080Emulator.dir/main.c.o"
   "/home/ulascan/c_programs/8080emu/src/memory.c" "/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/8080Emulator.dir/memory.c.o"
+  "/home/ulascan/c_programs/8080emu/src/timer.c" "/home/ulascan/c_programs/8080emu/src/build/CMakeFiles/8080Emulator.dir/timer.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
