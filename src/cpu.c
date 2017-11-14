@@ -27,11 +27,12 @@ static void RET(struct cpu_state* state){
 	
 }
 
-struct cpu_state* cpu_init(){
+struct cpu_state* cpu_init(struct cpu_state* state){
 	
-	struct cpu_state* state = calloc(1 , sizeof(struct cpu_state));
-	state->stack_ptr = 0xFFFF;/**Stack_ptr starts at the top**/
+	state = calloc(1 , sizeof(struct cpu_state));
 	state->mem_unit = mem_init();
+	state->stack_ptr = 0xFFFF;/**Stack_ptr starts at the top**/
+	printf("%d\n" , state->stack_ptr);
 
 return state;
 
@@ -64,7 +65,7 @@ static void DAA(struct cpu_state* state){
 unsigned int execute(struct cpu_state* state){
 
 	uint8_t opcode = read_mem(state->mem_unit , state->program_ptr);
-
+	
 	switch(opcode){
 		
 		/**MOV DEST , SRC**/
@@ -644,12 +645,6 @@ unsigned int execute(struct cpu_state* state){
 			emu_message(EMU_VERBOSE , "Executing EI | Enable Interrupts");
 			state->flag->I = 1;
 			break;
-		case 0x00: //NOP
-			break;
-		case 0x76:
-			emu_message(EMU_TRIVIAL , "Halted!");
-			--state->program_ptr;
-			break;
 		case 0x3C: //INR A
 			emu_message(EMU_VERBOSE , "Executing INR A | A++");
 			state->flag->C = __builtin_add_overflow(state->A , 1 , &state->A);
@@ -777,9 +772,9 @@ unsigned int execute(struct cpu_state* state){
 			emu_message(EMU_VERBOSE , "Executing DAA | Binary to BCD of A");
 			DAA(state);
 			break;
-		case 0x2F: //CMA A!=A
+		case 0x2F: //CMA A = 0xFF - A
 			emu_message(EMU_VERBOSE , "Executing CMA | A!=A");
-			A!=A;
+			state->A = 0xFF - state->A;
 			break;
 		case 0x37: //STC CARRY = 1;
 			emu_message(EMU_VERBOSE , "Executing STC | Carry=1");
@@ -787,7 +782,7 @@ unsigned int execute(struct cpu_state* state){
 			break;
 		case 0x3F: //CMC CARRY=!CARRY
 			emu_message(EMU_VERBOSE , "Executing CMC | Carry!=Carry");
-			state->flag->C != state->flag->C;
+			state->flag->C = 1 - state->flag->C;
 			break;
 		case 0x07: //RLC A<<1
 			emu_message(EMU_VERBOSE , "Executing RLC | A<<1");
@@ -1203,7 +1198,7 @@ unsigned int execute(struct cpu_state* state){
 			emu_message(EMU_DETAILED , "No operation!");
 			break;
 		case 0x76: //HLT
-			emu_message(EMU_TRIVIAL ,"HALT!");
+			emu_message(EMU_DETAILED ,"HALT!");
 			--state->program_ptr;
 			break;
 		default:

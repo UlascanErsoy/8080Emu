@@ -5,6 +5,8 @@ project(8080Emulator)
 set (VERSION_MAJOR 0)
 set (VERSION_MINOR 2)
 
+add_definitions("-Wall")
+
 configure_file (
 	"${PROJECT_SOURCE_DIR}/common.h.in"
 	"${PROJECT_SOURCE_DIR}/common.h"
