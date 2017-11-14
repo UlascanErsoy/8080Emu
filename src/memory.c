@@ -29,3 +29,13 @@ void write_mem16(MEMORY mem , uint16_t addr , uint16_t val){
 	
 	*(mem+addr) = val;	
 }
+
+/**Returns the erroneous memory address **/
+uint16_t mem_check(MEMORY mem){
+	
+	for(int i = 0; i < MEM_SIZE && mem[i]==0; i++)
+	
+		if(i != MEM_SIZE - 1)return i;
+
+return 0;
+}
