@@ -35,8 +35,9 @@ int main(int argc , char** argv){
 	
 		execute(cpu);
 		cpu->program_ptr++;
-		emu_delay(100);
+		emu_delay(0.001);
 		}
+	
  	printf("%d \n" , millis_since(timer));
 return 0;
 }

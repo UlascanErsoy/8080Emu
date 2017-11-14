@@ -16,9 +16,11 @@ return t;
 
 uint64_t millis_since(struct emu_millis_timer* t){return (clock() - t->start)/(CLOCKS_PER_SEC/1000);}
 
-void emu_delay(uint64_t millis){
+void emu_delay(double millis){
 	
 	clock_t s = clock();
 
-	while((clock() - s)/(CLOCKS_PER_SEC/1000) <= millis){}
+	while((clock() - (double)s)/(CLOCKS_PER_SEC/1000) <= millis){}
 }
+
+

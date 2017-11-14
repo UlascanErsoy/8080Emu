@@ -20,7 +20,6 @@ char* getVersion(char* _v);
 
 
 
-
 typedef struct cpu_state cpu_st;
 
 #endif
