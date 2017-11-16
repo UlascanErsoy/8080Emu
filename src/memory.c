@@ -22,12 +22,14 @@ void write_mem(MEMORY mem , uint16_t addr , uint8_t val){
 
 uint16_t read_mem16(MEMORY mem , uint16_t addr){
 	
-	return mem[addr] + (mem[addr+1] << 8);
+	return ((uint16_t)(mem[addr]<<8))+ (mem[addr+1]);
 
 }
 void write_mem16(MEMORY mem , uint16_t addr , uint16_t val){
 	
-	*(mem+addr) = val;	
+	*(mem+addr)  = (val >> 8) & 0xFF;
+	*(mem+addr+1)= (val) & 0xFF; 
+		
 }
 
 /**Returns the erroneous memory address **/

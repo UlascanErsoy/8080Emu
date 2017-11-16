@@ -20,7 +20,7 @@
 [ ]Implement Cpu Test
 [*]Implement DAA function
 
-[ ]Implement timer
+[*]Implement timer
 
 [-]Implement 16 bit functions
 	<--Functions-->
@@ -44,7 +44,11 @@
 [ ]Error codes
 
 [*]Verbose Mode
-
+---------------------------------------------------------
+#BUGS#
+[*]Fix the read_mem16 bug
+	#read_mem16 doesn't read the memory properly
+	
 #NOTES#
 ->First 64bytes of the page zero is dedicated to RET0-7 instructions
 ->Uncertain about RLC and RRC carry flag
