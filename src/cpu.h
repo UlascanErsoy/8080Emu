@@ -1,11 +1,9 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "common.h"
-#include "memory.h"
 #include "emulator.h"
 
-	enum registers{ S, P , A , B , C , D , E , H , L };
+enum registers{ S, P , A , B , C , D , E , H , L };
 	
 struct flags{
 	
@@ -36,13 +34,12 @@ struct cpu_state{
 	uint8_t H;	//H
 	uint8_t L;	//L 16 bit pair
 
-
-	MEMORY mem_unit;
+	uint8_t* mem_unit;
 	uint8_t port[8];
 
 }__attribute__((packed));
 	
 	struct cpu_state* cpu_init();
 	unsigned int execute(struct cpu_state* state);
-
+	
 #endif

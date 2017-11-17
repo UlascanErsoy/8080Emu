@@ -2,8 +2,8 @@
 #define EMULATOR_H
 
 #include "common.h"
-#include "memory.h"
 #include "cpu.h"
+#include "memory.h"
 #include "timer.h"
 
 #define DEBUG_MODE EMU_VERBOSE/** EMU_DETAILED EMU_TRIVIAL**/

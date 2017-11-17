@@ -9,7 +9,7 @@ inline static void write_16(uint8_t *ptr , uint16_t val){ *ptr = val; }
 
 inline static void JUMP(struct cpu_state* state, uint16_t addr){
 	
-	state->program_ptr = read_mem(state->mem_unit , addr);
+	state->program_ptr = addr;
 }
 
 /**Slightly Dubious**/
@@ -23,13 +23,15 @@ static void CALL(struct cpu_state* state, uint16_t addr){
 static void RET(struct cpu_state* state){
 	
 	state->program_ptr = read_mem16(state , state->stack_ptr);
-	state->stack_ptr+=2;
+	if(state->stack_ptr <= 0xFFFD)state->stack_ptr+=2;
+	else state->stack_ptr = 0xFFFF;
 	
 }
 
 struct cpu_state* cpu_init(struct cpu_state* state){
 	
 	state = calloc(1 , sizeof(struct cpu_state));
+	state->flag = calloc(1 , sizeof(struct flags));
 	state->mem_unit = mem_init();
 	state->stack_ptr = 0xFFFF;/**Stack_ptr starts at the top**/
 	printf("%d\n" , state->stack_ptr);
@@ -40,7 +42,11 @@ return state;
 
 static void updateFlags(struct cpu_state* state){
 	
-	state->flag->S = 1 - (state->A >> 8);
+	if((int8_t)state->A < 0)
+		state->flag->S = 1;
+	else
+		state->flag->S = 0;
+
 	if(state->A == 0)
 		state->flag->Z = 1;
 	else
@@ -48,6 +54,24 @@ static void updateFlags(struct cpu_state* state){
 	
 	state->flag->P = __builtin_parity(state->A);
 	state->flag->H = state->A >> 5;/**Auxiliary Carry Flag**/
+	/**Carry is set during the Addition - Subtraction**/
+
+}
+/**Update flags with a temporary variable instead of A **/
+static void updateFlagsT(struct cpu_state* state, uint8_t var){
+
+	if((int8_t)var < 0)
+		state->flag->S = 1;
+	else
+		state->flag->S = 0;
+
+	if(var == 0)
+		state->flag->Z = 1;
+	else
+	       	state->flag->Z = 0;
+	
+	state->flag->P = __builtin_parity(var);
+	state->flag->H = var >> 5;/**Auxiliary Carry Flag**/
 	/**Carry is set during the Addition - Subtraction**/
 
 }
@@ -915,99 +939,90 @@ unsigned int execute(struct cpu_state* state){
 		case 0xBF: //CMP A
 			emu_message(EMU_VERBOSE , "Executing CMP A | A?=A");
 			state->flag->Z = 1;
+			updateFlags(state);
 			break;
 		case 0xB8: //CMP B
 			emu_message(EMU_VERBOSE , "Executing CMP B | A?=B");
 			state->flag->Z = state->B-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xB9: //CMP C
 			emu_message(EMU_VERBOSE , "Executing CMP C | A?=C");
 			state->flag->Z = state->C-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xBA: //CMP D
 			emu_message(EMU_VERBOSE , "Executing CMP D | A?=D");
 			state->flag->Z = state->D-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xBB: //CMP E
 			emu_message(EMU_VERBOSE , "Executing CMP E | A?=E");
 			state->flag->Z = state->E-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xBC: //CMP H
 			emu_message(EMU_VERBOSE , "Executing CMP H | A?=H");
 			state->flag->Z = state->H-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xBD: //CMP L
 			emu_message(EMU_VERBOSE , "Executing CMP L | A?=L");
 			state->flag->Z = state->L-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xBE: //CMP M
 			emu_message(EMU_VERBOSE , "Executing CMP (HL) | A?=(HL)");
 			state->flag->Z = read_mem(state->mem_unit , reg_HL(state))-state->A==0?1:0;
+			updateFlags(state);
 			break;
 		case 0xFE: //CPI byte
 			emu_message(EMU_VERBOSE , "Executing CPI byte | A?=Byte");
-			state->flag->Z = read_mem(state->mem_unit , ++state->program_ptr)-state->A==0?1:0;
+			updateFlagsT(state , read_mem(state->mem_unit , ++state->program_ptr)-state->A);
+			printf("C: %d S: %d Z:%d\n" ,state->flag->C , state->flag->S , state->flag->Z);
 			break;
 		case 0xC3: //JMP address
 			emu_message(EMU_VERBOSE , "Executing JMP addr | program_ptr = address");
 			JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-			++state->program_ptr;
 			break;
 		case 0xC2: //JNZ address
-			emu_message(EMU_VERBOSE , "Executing JNZ addr | if NZ->program_ptr = address");
-			if(!state->flag->Z){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JNZ addr | if NZ |=> program_ptr = address");
+			if(!state->flag->Z)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xCA: //JZ address
-			emu_message(EMU_VERBOSE , "Executing JZ addr | if Z->program_ptr = address");
-			if(state->flag->Z){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JZ addr | if Z |=> program_ptr = address");
+			if(state->flag->Z)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xD2: //JNC address
-			emu_message(EMU_VERBOSE , "Executing JNC addr | if NC->program_ptr = address");
-			if(!state->flag->C){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JNC addr | if NC |=> program_ptr = address");
+			if(!state->flag->C)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xDA: //JC  address
-			emu_message(EMU_VERBOSE , "Executing JC addr | if C->program_ptr = address");
-			if(state->flag->C){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JC addr | if C |=> program_ptr = address");
+			if(state->flag->C)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xE2: //JPO address
-			emu_message(EMU_VERBOSE , "Executing JPO addr | if PO->program_ptr = address");
-			if(!state->flag->P){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JPO addr | if PO |=> program_ptr = address");
+			if(!state->flag->P)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;		
 			break;
 		case 0xEA: //JPE address
-			emu_message(EMU_VERBOSE , "Executing JPE addr | if PE->program_ptr = address");
-			if(state->flag->P){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JPE addr | if PE |=> program_ptr = address");
+			if(state->flag->P)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
 			break;
 		case 0xF2: //JP address
-			emu_message(EMU_VERBOSE , "Executing JP addr | if S->program_ptr = address");
-			if(!state->flag->S){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JP addr | if S |=> program_ptr = address");
+			if(!state->flag->S)JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;		
 			break;
 		case 0xFA: //JM address
-			emu_message(EMU_VERBOSE , "Executing JM addr | if S->program_ptr = address");
-			if(state->flag->S){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			emu_message(EMU_VERBOSE , "Executing JM addr | if S |=> program_ptr = address");
+			if(state->flag->S)JUMP(state ,read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;		
 			break;
 		case 0xE9: //PCHL
 			emu_message(EMU_VERBOSE , "Executing PCHL | PC <- HL");
@@ -1016,63 +1031,46 @@ unsigned int execute(struct cpu_state* state){
 		case 0xCD: //CALL address
 			emu_message(EMU_VERBOSE , "Executing CALL addr | program_ptr = address");
 			CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-			++state->program_ptr;
 			break;
 		case 0xC4: //CNZ address
 			emu_message(EMU_VERBOSE , "Executing CNZ addr | if NZ->program_ptr = address");
-			if(!state->flag->Z){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(!state->flag->Z)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xCC: //CZ address
 			emu_message(EMU_VERBOSE , "Executing CZ addr | if Z->program_ptr = address");
-			if(state->flag->Z){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(state->flag->Z)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xD4: //CNC address
 			emu_message(EMU_VERBOSE , "Executing CNC addr | if NC->program_ptr = address");
-			if(!state->flag->C){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(!state->flag->C)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xDC: //CC  address
 			emu_message(EMU_VERBOSE , "Executing CC addr | if C->program_ptr = address");
-			if(state->flag->C){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(state->flag->C)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xE4: //CPO address
 			emu_message(EMU_VERBOSE , "Executing CPO addr | if PO->program_ptr = address");
-			if(!state->flag->P){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(!state->flag->P)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xEC: //CPE address
 			emu_message(EMU_VERBOSE , "Executing CPE addr | if PE->program_ptr = address");
-			if(state->flag->P){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(state->flag->P)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xF4: //CP address
 			emu_message(EMU_VERBOSE , "Executing CP addr | if S->program_ptr = address");
-			if(!state->flag->S){
-				JUMP(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(!state->flag->S)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xFC: //CM address
 			emu_message(EMU_VERBOSE , "Executing CM addr | if S->program_ptr = address");
-			if(state->flag->S){
-				CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
-				++state->program_ptr;
-				}
+			if(state->flag->S)CALL(state , read_mem16(state->mem_unit , ++state->program_ptr));
+			else state->program_ptr+=2;
 			break;
 		case 0xC9: //RET
 			emu_message(EMU_VERBOSE , "Executing RET | RETURN from subroutine");
@@ -1203,6 +1201,7 @@ unsigned int execute(struct cpu_state* state){
 			break;
 		default:
 			emu_error("Execution Error!",true);
+
 
 	}	
 	

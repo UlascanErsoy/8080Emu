@@ -23,8 +23,11 @@ CMakeFiles/8080Emulator.dir/main.c.o: ../memory.h
 CMakeFiles/8080Emulator.dir/main.c.o: ../timer.h
 
 CMakeFiles/8080Emulator.dir/memory.c.o: ../common.h
+CMakeFiles/8080Emulator.dir/memory.c.o: ../cpu.h
+CMakeFiles/8080Emulator.dir/memory.c.o: ../emulator.h
 CMakeFiles/8080Emulator.dir/memory.c.o: ../memory.c
 CMakeFiles/8080Emulator.dir/memory.c.o: ../memory.h
+CMakeFiles/8080Emulator.dir/memory.c.o: ../timer.h
 
 CMakeFiles/8080Emulator.dir/timer.c.o: ../common.h
 CMakeFiles/8080Emulator.dir/timer.c.o: ../cpu.h

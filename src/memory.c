@@ -41,3 +41,28 @@ uint16_t mem_check(MEMORY mem){
 
 return 0;
 }
+
+void load_rom(MEMORY mem, const char* dir){
+	
+	FILE* f = fopen(dir , "rb");
+	if(!f){
+		
+		emu_error("Couldn't open the file!" , true);
+		exit(1);
+
+	}	
+
+	fseek(f , 0 , SEEK_END);
+	uint32_t _t;
+	if((_t = ftell(f)) > 0xFFFF){
+		
+		emu_error("File too large! > 0xFFFF bytes!" , true);
+
+	}
+
+	rewind(f);
+
+	fread(mem , sizeof(uint8_t) , _t , f);
+	
+
+}

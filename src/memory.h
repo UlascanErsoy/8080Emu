@@ -1,7 +1,7 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include "common.h"
+#include "emulator.h"
 
 #define MEM_SIZE 0xFFFF
 
@@ -12,5 +12,5 @@
 	uint16_t mem_check(MEMORY mem);
 	void write_mem(MEMORY mem , uint16_t addr , uint8_t val);
 	void write_mem16(MEMORY me, uint16_t addr , uint16_t val);
-	
+	void load_rom(MEMORY mem, const char* dir);
 #endif 

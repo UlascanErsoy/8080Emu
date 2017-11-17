@@ -42,13 +42,22 @@
 [ ]emu_dump
 [ ]memory_dump
 [ ]Error codes
+[ ]Better diagnostics
 
 [*]Verbose Mode
 ---------------------------------------------------------
 #BUGS#
 [*]Fix the read_mem16 bug
 	#read_mem16 doesn't read the memory properly
-	
+[ ]Fix CALL / CPI function
+[*]Bug Fix -> Conditional JUMP AND CALL functions
+	#Stop incrementing the program ptr after a jump
+	#doesn't skip the arguments of the instruction if the condition isn't satisfied...
+[*]CP function bug fix
+	#Used JUMP instead of CALL
+[*]Bug Fix JUMP function
+	#JUMPs to the value of the address pointed by the immediate instead of jumping to the (immediate)
+[ ]JUMP and CALLS, jump to @address+1
 #NOTES#
 ->First 64bytes of the page zero is dedicated to RET0-7 instructions
 ->Uncertain about RLC and RRC carry flag

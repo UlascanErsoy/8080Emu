@@ -7,46 +7,25 @@ int main(int argc , char** argv){
 
 	emu_message(EMU_DETAILED , test_endianness()==1?"Little Endian!":"Big Endian!");
 	struct cpu_state* cpu = cpu_init(cpu);
-
 	
-/**
-	emu_message("Verbose" , EMU_VERBOSE);
-	emu_message("Detailed", EMU_DETAILED);
-	emu_message("Normal"  , EMU_TRIVIAL);
-	emu_warning("Warning Test!" , EMU_VERBOSE);
-	emu_error("Non-fatal Error!" , false);
-	emu_error("Fatal Error!" , true);
-**/
-//	write_mem(cpu->mem_unit , 0xF1 , 12);
-//	printf("%d\n" , read_mem(cpu->mem_unit , 0/emu_message(EMU_TRIVIAL, getVersion());
- 	char* _v = getVersion(_v);
-	emu_message(EMU_VERBOSE , _v);	
+	uint8_t i = 10;
+	int8_t a = (int8_t) i;
+	printf("%d %c\n" , a,1 - (i << 8)==0?'+':'-');
 
-	cpu->mem_unit[0] = 0x00;
-	cpu->mem_unit[1] = 0x3A;
-	cpu->mem_unit[2] = 0x3;
-	write_mem16(cpu->mem_unit , 3 , 51);
-	write_mem16(cpu->mem_unit , 51, 255);
-//	printf("%d \n" , read_mem16(cpu->mem_unit , 41));
-
-//	cpu->mem_unit[4] = 0x47;
-//	cpu->mem_unit[5] = 0x80;
-//	cpu->mem_unit[6] = 0xC3;
-//	write_mem16(cpu->mem_unit , 7 , 30);
-//	cpu->mem_unit[30] = 0x76;
-	
-//	printf("%d \n" , cpu->program_ptr);
-//	printf("%d %s\n" , cpu->stack_ptr , mem_check(cpu->mem_unit)==0?"No Memory Error":"Memory Error Occured!");
-	
-
-	for(int i = 0 ; i < 20 ; i++){
+	load_rom(cpu->mem_unit, "../rom/cpudiag.bin");
+	cpu->program_ptr = 0x64;
+//	cpu->mem_unit[0] = 0xC3;
+//	write_mem16(cpu->mem_unit , 1 , 32000);
+//	for(int i = 0; i < 20 ; i++)
+//	printf("%.x\n" , read_mem(cpu->mem_unit , 100+i));
+	while(true){
 	
 		execute(cpu);
-		cpu->program_ptr++;
-		printf("%d %d\n" , cpu->program_ptr , cpu->A);
-		emu_delay(0.1);
-		}
-	
+		printf("\t**stack_ptr: %.x program_ptr: %d Opcode: 0x%.2x\n" , cpu->stack_ptr , cpu->program_ptr , read_mem(cpu->mem_unit , cpu->program_ptr));
+		emu_delay(100);
+		++cpu->program_ptr;
+	}
+
  	printf("%d %d %d\n" , millis_since(timer) , cpu->A , cpu->program_ptr);
 return 0;
 }
